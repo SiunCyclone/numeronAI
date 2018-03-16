@@ -15,12 +15,12 @@ ul {
   padding 0;
 }
 
-.correct-buttons li {
+.select-buttons li {
   display: inline-block;
   padding: 0px 2px;
 }
 
-.correct-button, .nearpin-button {
+.select-button, .nearpin-button {
   padding: 10px 25px;
   font-size: 1.2em;
   font-weight: bold;
@@ -30,7 +30,7 @@ ul {
   border-radius: 3px;
 }
 
-.correct-button, .nearpin-button {
+.select-button, .nearpin-button {
   border:1px solid #793b0c;
   text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
   color: #FFFFFF;
@@ -42,7 +42,7 @@ ul {
   background-image: linear-gradient(to bottom, #ac5411, #3A000D);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ac5411, endColorstr=#3A000D);
 }
 
-.correct-button:hover, .nearpin-button:hover {
+.select-button:hover, .nearpin-button:hover {
   background-color: #DA6B16; background-image: -webkit-gradient(linear, left top, left bottom, from(#DA6B16), to(#6D0019));
   background-image: -webkit-linear-gradient(top, #DA6B16, #6D0019);
   background-image: -moz-linear-gradient(top, #DA6B16, #6D0019);
@@ -51,7 +51,7 @@ ul {
   background-image: linear-gradient(to bottom, #DA6B16, #6D0019);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#DA6B16, endColorstr=#6D0019);
 }
 
-.correct-button:active, .nearpin-button:active {
+.select-button:active, .nearpin-button:active {
   background-color: #DA6B16; background-image: -webkit-gradient(linear, left top, left bottom, from(#DA6B16), to(#6D0019));
   background-image: -webkit-linear-gradient(top, #DA6B16, #6D0019);
   background-image: -moz-linear-gradient(top, #DA6B16, #6D0019);
@@ -60,8 +60,8 @@ ul {
   background-image: linear-gradient(to bottom, #DA6B16, #6D0019);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#DA6B16, endColorstr=#6D0019);
 }
 
-.correct-button:active, .nearpin-button:active, .is-active,
-.correct-button:hover.is-active, .nearpin-button:hover.is-active {
+.select-button:active, .nearpin-button:active, .is-active,
+.select-button:hover.is-active, .nearpin-button:hover.is-active {
   background-image: -webkit-linear-gradient(top, #d5cea6, #b7ad70);
   background-image: -moz-linear-gradient(top, #d5cea6, #b7ad70);
   background-image: -ms-linear-gradient(top, #d5cea6, #b7ad70);
