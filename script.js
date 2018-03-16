@@ -6,25 +6,25 @@ Vue.component('predict-area', {
   `,
 
   props: {
-    difficulty: Number
+    difficulty: String
   },
 
   data() {
     return {
       predictNumbers: [],
       minNumber: 1,
-      maxNumber: 9,
-      restOptionNumber: 0
+      maxNumber: 9
     };
   },
 
-  mounted() {
-    this.restOptionNumber = _.reduce(_.range(10 - difficulty, 9), (a, b) => { return a * b; });
     //Math.floor(Math.random() * maxNumber) + minNumber;
+  computed: {
+    restOptionNumber() {
+      //this.restOptionNumber = _.reduce(_.range(10 - Number(difficulty), 9), (a, b) => { return a * b; });
+    }
   },
 
   methods: {
-
   }
 });
 
