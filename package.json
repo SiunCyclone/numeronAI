@@ -1,0 +1,21 @@
+{
+  "name": "tanteikun",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "siun",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-loader": "^4.1.0",
+    "typescript": "^2.7.2",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
+  },
+  "dependencies": {
+    "vue": "^2.5.16",
+    "vue-class-component": "^6.2.0"
+  }
+}

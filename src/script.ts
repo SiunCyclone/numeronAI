@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 Vue.component('predict-area', {
   template: `
     <div class="predict-area">
