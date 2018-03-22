@@ -1,15 +1,26 @@
 import Vue from "vue";
 import _ from "underscore";
 
-Vue.component('predict-area', {
-  template: `
-    <div class="predict-area">
-      <div class="predict-view">
-        <h2>{{ this.predictNumber }}</h2>
-        <h4>正答確率: {{ this.probability }}</h4>
-        <h4>残り候補数: {{ this.restChoosableNumber }}</h4>
-      </div>
+class Solver {
+  predictLog:[] = new Array();
 
+  predictNumber():number {
+    if (this.predictLog.length == 0)
+      return Number(_.sample(_.range(1, 10), 3).join(''));
+
+    return 0;
+  },
+
+  restChoosableNumber():number {
+    if (this.predictLog.length == 0)
+      return _.reduce(_.range(10 - Number(this.difficulty), 10), (a, b) => { return a * b; });
+
+    return 0;
+  }
+}
+
+/*
+        <h4>残り候補数: {{ this.solver.restChoosableNumber() }}</h4>
       <div class="predict-log">
         <ul>
           <li v-for="log in predictLog">
@@ -17,16 +28,26 @@ Vue.component('predict-area', {
           </li>
         </ul>
       </div>
+*/
+
+Vue.component('predict-area', {
+  template: `
+    <div class="predict-area">
+      <div class="predict-view">
+        <h2>{{ this.solver.predictNumber() }}</h2>
+        <h4>正答確率: {{ this.probability }}</h4>
+      </div>
+
     </div>
   `,
 
   props: {
-    difficulty: String
+    difficulty: String,
+    solver: Solver
   },
 
   data() {
     return {
-      predictLog: [],
       minNumber: 1,
       maxNumber: 9
     };
@@ -36,21 +57,7 @@ Vue.component('predict-area', {
   },
 
   computed: {
-    predictNumber() {
-      if (this.predictLog.length == 0)
-        return Number(_.sample(_.range(1, 10), 3).join(''));
-
-      return 0;
-    },
-
     probability() {
-    },
-
-    restChoosableNumber() {
-      if (this.predictLog.length == 0)
-        return _.reduce(_.range(10 - Number(this.difficulty), 10), (a, b) => { return a * b; });
-
-      return 0;
     }
   }
 });
@@ -125,7 +132,8 @@ new Vue({
 
   data: {
     difficulty: '3',
-    maxDifficulty: 5
+    maxDifficulty: 5,
+    solver: new Solver()
   }
 })
 
