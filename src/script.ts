@@ -4,7 +4,19 @@ import _ from "underscore";
 Vue.component('predict-area', {
   template: `
     <div class="predict-area">
-      <h3>残り候補数: {{ restOptionNumber }}</h3>
+      <div class="predict-view">
+        <h2>{{ this.predictNumber }}</h2>
+        <h4>正答確率: {{ this.probability }}</h4>
+        <h4>残り候補数: {{ this.restChoosableNumber }}</h4>
+      </div>
+
+      <div class="predict-log">
+        <ul>
+          <li v-for="log in predictLog">
+            {{ log.number }} {{ log.eat }} {{ log.bite }}
+          </li>
+        </ul>
+      </div>
     </div>
   `,
 
@@ -14,21 +26,32 @@ Vue.component('predict-area', {
 
   data() {
     return {
-      predictNumbers: [],
+      predictLog: [],
       minNumber: 1,
       maxNumber: 9
     };
   },
 
-    //Math.floor(Math.random() * maxNumber) + minNumber;
-  computed: {
-    restOptionNumber() {
-      return _.reduce(_.range(7, 10), (a, b) => { return a * b; });
-      // this.restOptionNumber = _.reduce(_.range(10 - Number(difficulty), 9), (a, b) => { return a * b; });
-    }
+  created() {
   },
 
-  methods: {
+  computed: {
+    predictNumber() {
+      if (this.predictLog.length == 0)
+        return Number(_.sample(_.range(1, 10), 3).join(''));
+
+      return 0;
+    },
+
+    probability() {
+    },
+
+    restChoosableNumber() {
+      if (this.predictLog.length == 0)
+        return _.reduce(_.range(10 - Number(this.difficulty), 10), (a, b) => { return a * b; });
+
+      return 0;
+    }
   }
 });
 
@@ -82,6 +105,18 @@ Vue.component('select-button', {
       isActive: false,
       index: this.val
     };
+  }
+});
+
+Vue.component('reset-button', {
+  template: `
+    <button class="reset-button" @click=reset><slot></slot></button>
+  `,
+
+  methods: {
+    reset() {
+      console.log("reset");
+    }
   }
 });
 
