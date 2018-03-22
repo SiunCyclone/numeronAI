@@ -1,4 +1,5 @@
-import Vue from 'vue';
+import Vue from "vue";
+import _ from "underscore";
 
 Vue.component('predict-area', {
   template: `
@@ -22,7 +23,8 @@ Vue.component('predict-area', {
     //Math.floor(Math.random() * maxNumber) + minNumber;
   computed: {
     restOptionNumber() {
-      //this.restOptionNumber = _.reduce(_.range(10 - Number(difficulty), 9), (a, b) => { return a * b; });
+      return _.reduce(_.range(7, 10), (a, b) => { return a * b; });
+      // this.restOptionNumber = _.reduce(_.range(10 - Number(difficulty), 9), (a, b) => { return a * b; });
     }
   },
 

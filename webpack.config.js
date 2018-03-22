@@ -1,7 +1,16 @@
+const path = require('path');
+
 module.exports = {
   mode: 'development',
 
+  devtool: 'inline-source-map',
+
   entry: './src/script.ts',
+
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
 
   module: {
     rules: [
@@ -13,8 +22,9 @@ module.exports = {
   },
 
   resolve: {
-    extensions: [ '.ts' ],
-    alias: { vue: 'vue/dist/vue.js' }
+    alias: {
+      vue: 'vue/dist/vue.js'
+    }
   }
 };
 

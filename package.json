@@ -2,15 +2,19 @@
   "name": "tanteikun",
   "version": "1.0.0",
   "description": "",
-  "main": "script.js",
+  "main": "app.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --watch",
+    "start": "nodemon"
   },
   "author": "siun",
   "license": "MIT",
   "devDependencies": {
+    "express": "^4.16.3",
+    "nodemon": "^1.17.2",
     "ts-loader": "^4.1.0",
     "typescript": "^2.7.2",
+    "underscore": "^1.8.3",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.12"
   },
