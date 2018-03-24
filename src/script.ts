@@ -14,6 +14,7 @@ class Solver {
 
   predict(eat:number, bite:number):void {
     if (this._answerLog.length === 0) {
+      // Set random 3 number
       this._answer = Number(_.sample(_.range(1, 10), 3).join(''));
       return;
     }
@@ -27,17 +28,19 @@ class Solver {
     });
   }
 
-  restChoosableNumber(difficulty:number):number {
+  get answer() { return this._answer; }
+
+  get candidateCount():number {
     if (this._answerLog.length === 0)
-      return _.reduce(_.range(10 - difficulty, 10), (a, b) => { return a * b; });
+      return _.reduce(_.range(10 - this.difficulty, 10), (a, b) => { return a * b; });
 
     return 0;
   }
 
-  get answer() { return this._answer; }
-
+  public difficulty:number;
   private _answer:number;
   private _answerLog:Answer[] = [];
+  private _candidateList:number[] = [];
 }
 
   /*
@@ -56,7 +59,7 @@ Vue.component('predict-area', {
       <div class="predict-view">
         <h2>{{ solver.answer }}</h2>
         <h4>正答確率: {{ }}</h4>
-        <h4>残り候補数: {{ solver.restChoosableNumber(Number(this.difficulty)) }}</h4>
+        <h4>残り候補数: {{ candidateCount }}</h4>
       </div>
 
     </div>
@@ -67,9 +70,10 @@ Vue.component('predict-area', {
     solver: Solver
   },
 
-  data() {
-    return {
-
+  computed: {
+    candidateCount() {
+      this.solver.difficulty = this.difficulty;
+      return this.solver.candidateCount;
     }
   }
 });
