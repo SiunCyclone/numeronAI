@@ -28,11 +28,17 @@ class Solver {
     });
   }
 
-  get answer() { return this._answer; }
+  get answer():number {
+    return this._answer;
+  }
+
+  get answerLog():Answer[] {
+    return this._answerLog;
+  }
 
   get candidateCount():number {
     if (this._answerLog.length === 0)
-      return _.reduce(_.range(10 - this.difficulty, 10), (a, b) => { return a * b; });
+      return _.reduce(_.range(10 - this.difficulty, 10), (a, b) => { return a * b; }) - 1;
 
     return 0;
   }
@@ -43,16 +49,6 @@ class Solver {
   private _candidateList:number[] = [];
 }
 
-  /*
-      <div class="predict-log">
-        <ul>
-          <li v-for="log in predictLog">
-            {{ log.number }} {{ log.eat }} {{ log.bite }}
-          </li>
-        </ul>
-      </div>
-   */
-
 Vue.component('predict-area', {
   template: `
     <div class="predict-area">
@@ -62,6 +58,13 @@ Vue.component('predict-area', {
         <h4>残り候補数: {{ candidateCount }}</h4>
       </div>
 
+      <div class="predict-log">
+        <ul>
+          <li v-for="log in solver.answerLog">
+            {{ log.answer}} {{ log.eat }} {{ log.bite }}
+          </li>
+        </ul>
+      </div>
     </div>
   `,
 
