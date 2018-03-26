@@ -2,7 +2,7 @@ import Vue from "vue";
 import _ from "underscore";
 
 type Answer = {
-  answer: number,
+  call: number,
   eat: number,
   bite: number
 }
@@ -15,21 +15,21 @@ class Solver {
   predict(eat:number, bite:number):void {
     if (this._answerLog.length === 0) {
       // Set random 3 number
-      this._answer = Number(_.sample(_.range(1, 10), 3).join(''));
+      this._call = Number(_.sample(_.range(1, 10), 3).join(''));
       return;
     }
 
-    let answer:number;
-
     this._answerLog.push({
-      answer: answer,
+      call: this.call,
       eat: eat,
       bite: bite
     });
+
+    let call:number;
   }
 
-  get answer():number {
-    return this._answer;
+  get call():number {
+    return this._call;
   }
 
   get answerLog():Answer[] {
@@ -38,13 +38,14 @@ class Solver {
 
   get candidateCount():number {
     if (this._answerLog.length === 0)
-      return _.reduce(_.range(10 - this.difficulty, 10), (a, b) => { return a * b; }) - 1;
+      return _.range(10 - this.difficulty, 10).reduce((a, b) => { return a * b; });
 
     return 0;
   }
 
   public difficulty:number;
-  private _answer:number;
+
+  private _call:number;
   private _answerLog:Answer[] = [];
   private _candidateList:number[] = [];
 }
@@ -53,15 +54,15 @@ Vue.component('predict-area', {
   template: `
     <div class="predict-area">
       <div class="predict-view">
-        <h2>{{ solver.answer }}</h2>
+        <h2>{{ solver.call }}</h2>
         <h4>正答確率: {{ }}</h4>
-        <h4>残り候補数: {{ candidateCount }}</h4>
+        <h4>候補数: {{ candidateCount }}</h4>
       </div>
 
       <div class="predict-log">
         <ul>
           <li v-for="log in solver.answerLog">
-            {{ log.answer}} {{ log.eat }} {{ log.bite }}
+            {{ log.call }} {{ log.eat }} {{ log.bite }}
           </li>
         </ul>
       </div>
