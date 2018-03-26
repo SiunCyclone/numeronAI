@@ -17,30 +17,6 @@ def judge(call, answer)
   return [eat, bite]
 end
 
-def createCandidate(originalNumbers)
-  candidateList = []
-
-  loopLamb = ->(candidateTmp = [], numbers) {
-    numbers.each do |x|
-      candidate = [*candidateTmp, x]
-
-      if (candidate.length == $difficulty)
-        candidateList << candidate
-      else
-        restNumbers = numbers.select{|y| y != x }
-        loopLamb[candidate, restNumbers]
-      end
-    end
-  }
-
-  loopLamb.call(originalNumbers)
-
-  return candidateList
-end
-
-def updateCandidate(call, judgeResult, candidateList)
-end
-
 def algo1_random(answer)
   call = nil
   turn = 0
