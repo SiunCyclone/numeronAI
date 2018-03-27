@@ -1,6 +1,7 @@
 require 'pp'
 
 $difficulty = 3
+$max = 9
 
 def judge(call, answer)
   eat = 0
@@ -33,7 +34,7 @@ def algo2_entropy(answer)
   call = (1..9).to_a.sample($difficulty)
   turn = 1
 
-  candidateList = createCandidate((1..9).to_a)
+  candidateList = (1..9).to_a.permutation($difficulty).to_a
   outList = []
 
   total = candidateList.length
@@ -58,13 +59,22 @@ def algo2_entropy(answer)
     return entropy
   }
 
-  callList = [call]
+  candidateCountHistory = []
+
   while (call != answer)
     turn += 1
 
     judgeResult = judge(call, answer)
-    outList = candidateList.select{|candidate| judge(candidate, call) != judgeResult }
-    candidateList.select!{|candidate| judge(candidate, call) == judgeResult }
+    candidateList.select! do |candidate|
+      if (judge(candidate, call) == judgeResult)
+        true
+      else
+        outList << candidate
+        false
+      end
+    end
+
+    candidateCountHistory << candidateList.length
 
     entropyHash = {}
     (candidateList + outList).each do |target|
@@ -76,28 +86,152 @@ def algo2_entropy(answer)
     end
 
     call = entropyHash[entropyHash.keys.max]
-    callList << call
   end
 
-  p "answer: " + answer.to_s
-  p callList
+  return [turn, candidateCountHistory]
+end
 
-  return turn
+def algo3_minimax(answer)
+  call = (1..$max).to_a.sample($difficulty)
+  turn = 1
+
+  candidateList = (1..$max).to_a.permutation(3).to_a
+  outList = []
+
+  predictNextCount = ->(target, judgeResult) {
+    nextList = candidateList.select do |candidate|
+      if (judge(target, candidate) == judgeResult)
+        true
+      else
+        false
+      end
+    end
+
+    nextCount = nextList.length
+
+    if (nextCount == 0)
+      nextCount = candidateList.length
+    end
+
+    return nextCount
+  }
+
+  calcExpectation = ->(target) {
+    nextCountList = []
+
+    candidateList.each do |candidate|
+      judgeResult = judge(target, candidate)
+      nextCountList << predictNextCount[target, judgeResult]
+    end
+
+    return nextCountList.inject(:+) / nextCountList.length.to_f
+  }
+
+  calcMinimax = ->(list) {
+    expectationList = list.map{|target| calcExpectation[target] }
+
+    expectationHash = {}
+    expectationList.zip(list) do |ary|
+      expectation = ary[0]
+      candidate = ary[1]
+
+      if (!expectationHash.key?(expectation))
+        expectationHash[expectation] = candidate
+      end
+    end
+
+    return expectationHash.min[1]
+  }
+
+  candidateCountHistory = []
+
+  while (call != answer)
+    turn += 1
+
+    judgeResult = judge(call, answer)
+    candidateList.select! do |candidate|
+      if (judge(candidate, call) == judgeResult)
+        true
+      else
+        outList << candidate
+        false
+      end
+    end
+
+    candidateCountHistory << candidateList.length
+
+    call = calcMinimax[candidateList + outList]
+  end
+
+  return [turn, candidateCountHistory]
+end
+
+def showListInfo(list, name = nil)
+  return if list == []
+
+  turnList = list.map{|x| x[0] }.sort
+  candidateCountHistory = list.map{|x| x[1] }
+
+  turnInfo = {}
+
+  turnList.each do |turn|
+    if (turnInfo.key?(turn))
+      turnInfo[turn] += 1
+    else
+      turnInfo[turn] = 1
+    end
+  end
+
+  maxLength = candidateCountHistory.map{|x| x.length}.max
+
+  candidateCountHistory = candidateCountHistory.map{|x|
+    result = x
+    (maxLength - x.length).times do |i|
+      result << 0
+    end
+
+    result
+  }
+
+  lastIndex = candidateCountHistory.length - 1
+
+  tmp = candidateCountHistory[0].zip(*candidateCountHistory[1..lastIndex])
+  meanList = tmp.map{|x| (x.inject(:+) / x.select{|x| x != 0 }.length.to_f).round(2) }
+
+  puts
+  p name if (name != nil)
+
+  turnInfo.to_a.each_with_index do |info, i|
+    turn = info[0]
+    count = info[1]
+
+    p " |Turn: " + turn.to_s +
+      " |Count: " + count.to_s +
+      " |Probability: " + (count / turnList.length.to_f * 100.0).round(1).to_s + "%" +
+      " |CandidateCount: " + meanList[i].to_s + " |"
+  end
+
+  p "Average: " + (list.map{|x| x[0]}.inject(:+).to_f / list.length).to_s + " turn"
 end
 
 def main
-  tlist1 = []
-  tlist2 = []
+  list1 = []
+  list2 = []
+  list3 = []
 
-  20.times do |x|
-    answer = (1..9).to_a.sample($difficulty)
+  trial = 10
+  trial.times do |i|
+    p "#{ i.to_s }/#{ trial } (#{ (i / trial.to_f * 100.0).round(1) }%)"
 
-    # tlist1 << algo1_random(answer)
-    tlist2 << algo2_entropy(answer)
+    answer = (1..$max).to_a.sample($difficulty)
+
+    # list1 << algo1_random(answer)
+    #list2 << algo2_entropy(answer)
+    list3 << algo3_minimax(answer)
   end
 
-  p tlist2
-  p tlist2.inject(:+).to_f / tlist2.length
+  #showListInfo(list2, "Entropy")
+  showListInfo(list3, "Minimax")
 end
 
 main
