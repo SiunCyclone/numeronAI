@@ -265,6 +265,127 @@ def algo4_minimax_opt(answer)
   return [turn, candidateCountHistory]
 end
 
+def algo5_entMini(answer)
+  call = ($range).to_a.sample($difficulty)
+  turn = 1
+
+  callList = [call]
+  judgeList = []
+  candidateList = ($range).to_a.permutation($difficulty).to_a
+  outList = []
+
+  total = candidateList.length
+
+  calcEntropy = ->(target, list) {
+    judgeHash = {}
+
+    list.each do |candidate|
+      result = judge(target, candidate)
+
+      if (judgeHash.key?(result))
+        judgeHash[result] += 1
+      else
+        judgeHash[result] = 1
+      end
+    end
+
+    countList = judgeHash.values
+    probabilityList = countList.map{|count| count / total.to_f }
+    entropy = probabilityList.map{|p| p * -Math.log(p, 2) }.inject(:+)
+
+    return entropy
+  }
+
+  predictNextCount = ->(target, judgeResult) {
+    nextList = candidateList.select do |candidate|
+      if (judge(target, candidate) == judgeResult)
+        true
+      else
+        false
+      end
+    end
+
+    nextCount = nextList.length
+
+    if (nextCount == 0)
+      nextCount = candidateList.length
+    end
+
+    return nextCount
+  }
+
+  calcExpectation = ->(target) {
+    nextCountList = []
+
+    candidateList.each do |candidate|
+      judgeResult = judge(target, candidate)
+      nextCountList << predictNextCount[target, judgeResult]
+    end
+
+    return nextCountList.inject(:+) / nextCountList.length.to_f
+  }
+
+  calcMinimax = ->(list) {
+    expectationList = list.map{|target| calcExpectation[target] }
+
+    expectationHash = {}
+    expectationList.zip(list) do |ary|
+      expectation = ary[0]
+      candidate = ary[1]
+
+      if (!expectationHash.key?(expectation))
+        expectationHash[expectation] = candidate
+      end
+    end
+
+    return expectationHash.min[1]
+  }
+
+  candidateCountHistory = []
+
+  while (call != answer)
+    turn += 1
+
+    judgeResult = judge(call, answer)
+    judgeList << judgeResult
+
+    candidateList.select! do |candidate|
+      if (judge(candidate, call) == judgeResult)
+        true
+      else
+        outList << candidate
+        false
+      end
+    end
+
+    candidateCountHistory << candidateList.length
+
+    if (turn < 4)
+      entropyHash = {}
+      (candidateList + outList).each do |target|
+        entropy = calcEntropy[target, candidateList]
+
+        if (!entropyHash.key?(entropy))
+          entropyHash[entropy] = target
+        end
+      end
+
+      call = entropyHash[entropyHash.keys.max]
+    else
+      call = calcMinimax[candidateList + outList]
+    end
+
+    callList << call
+  end
+
+  p answer
+  p callList
+  p "Judge : #{ judgeList }"
+  puts
+
+  return [turn, candidateCountHistory]
+end
+
 def showListInfo(list, name = nil)
   return if list == []
 
@@ -318,22 +439,25 @@ def main
   list2 = []
   list3 = []
   list4 = []
+  list5 = []
 
-  trial = 10
+  trial = 100
   trial.times do |i|
     p "#{ i.to_s }/#{ trial } (#{ (i / trial.to_f * 100.0).round(1) }%)"
 
     answer = ($range).to_a.sample($difficulty)
 
     # list1 << algo1_random(answer)
-    #list2 << algo2_entropy(answer)
+    list2 << algo2_entropy(answer)
     list3 << algo3_minimax(answer)
     #list4 << algo4_minimax_opt(answer)
+    #list5 << algo5_entMini(answer)
   end
 
-  #showListInfo(list2, "Entropy")
+  showListInfo(list2, "Entropy")
   showListInfo(list3, "Minimax")
   #showListInfo(list4, "MinimaxOpt")
+  #showListInfo(list5, "EntMini")
 end
 
 main
