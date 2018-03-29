@@ -2,52 +2,134 @@ import Vue from "vue";
 import _ from "underscore";
 
 type Answer = {
-  call: number,
+  call: number[],
   eat: number,
   bite: number
 }
 
+type Entropy = {
+  value: number,
+  candidate: number[]
+}
+
 class Solver {
-  constructor() {
-    this.predict(0, 0);
+  init(difficulty:number) {
+    this.reset(difficulty);
+  }
+
+  calcEntropy(target:number[]) {
+    var judgeMap = new Map();
+
+    this._candidateList.forEach(candidate => {
+      var result = judge(target, candidate).join("");
+
+      if (judgeMap.has(result))
+        judgeMap.set(result, judgeMap.get(result) + 1)
+      else
+        judgeMap.set(result, 1);
+    });
+
+    var countList = Array.from(judgeMap.values());
+    var probabilityList = countList.map(count => count / this.total);
+    var entropy = probabilityList.map(p => p * -Math.log2(p)).reduce((a, b) => a + b);
+
+    return entropy;
+  }
+
+  createEntroyList(targetList:number[][]):Entropy[] {
+    var entropyList:Entropy[] = [];
+
+    targetList.forEach(target => {
+      var entropy:Entropy = {
+        value: this.calcEntropy(target),
+        candidate: target
+      };
+
+      entropyList.push(entropy);
+    });
+
+    return entropyList;
+  }
+
+  updateCandidateList(eat:number, bite:number) {
+    this._candidateList = this._candidateList.filter(candidate => {
+      if (judge(candidate, this._call).join("") === [eat, bite].join("")) {
+        return true
+      } else {
+        this._outList.push(candidate);
+        return false
+      }
+    });
+  }
+
+  decideCall():void {
+    var candidateEntropyList = this.createEntroyList(this._candidateList);
+    var candidateMaxEntropy = Math.max(...candidateEntropyList.map(entropy => entropy.value));
+
+    var outEntropyList = this.createEntroyList(this._outList);
+    var outMaxEntropy = Math.max(...outEntropyList.map(entropy => entropy.value));
+
+    if (candidateMaxEntropy >= outMaxEntropy)
+      this._call = candidateEntropyList.find(entropy => entropy.value == candidateMaxEntropy).candidate;
+    else
+      this._call = outEntropyList.find(entropy => entropy.value == outMaxEntropy).candidate;
   }
 
   predict(eat:number, bite:number):void {
-    if (this._answerLog.length === 0) {
-      // Set random 3 number
-      this._call = Number(_.sample(_.range(1, 10), 3).join(''));
-      return;
-    }
+    this.updateCandidateList(eat, bite);
+    this.decideCall();
 
     this._answerLog.push({
       call: this.call,
       eat: eat,
       bite: bite
     });
-
-    let call:number;
   }
 
-  get call():number {
+  reset(difficulty:number):void {
+    this.difficulty = difficulty;
+    this._call = _.sample(_.range(1, 10), this.difficulty);
+    this._candidateList = permutation(_.range(1, 10), this.difficulty);
+    this._outList = [];
+    this._answerLog = [];
+  }
+
+  get call():number[] {
     return this._call;
+  }
+
+  get candidateCount():number {
+    return this._candidateList.length;
   }
 
   get answerLog():Answer[] {
     return this._answerLog;
   }
 
-  get candidateCount():number {
-    if (this._answerLog.length === 0)
-      return _.range(10 - this.difficulty, 10).reduce((a, b) => { return a * b; });
-
-    return 0;
+  get total():number {
+    return this._candidateList.length + this._outList.length;
   }
 
   public difficulty:number;
 
-  private _call:number;
+  private _call:number[] = [];
+  private _candidateList:number[][] = [];
+  private _outList:number[][] = [];
   private _answerLog:Answer[] = [];
-  private _candidateList:number[] = [];
+}
+
+var judge = (call:number[], answer:number[]):number[] => {
+  var eat = 0
+  var bite = 0
+
+  _.zip(call, answer).forEach(ary => {
+    if (ary[0] === ary[1])
+      eat += 1
+    else if(answer.includes(ary[0]))
+      bite += 1
+  });
+
+  return [eat, bite];
 }
 
 var permutation = (originalNumbers:number[], length:number) => {
@@ -81,11 +163,11 @@ Vue.component('predict-area', {
       </div>
 
       <div class="predict-log">
-        <ul>
+        <ol>
           <li v-for="log in solver.answerLog">
-            {{ log.call }} {{ log.eat }} {{ log.bite }}
+            {{ log.call }} {{ log.eat }}, {{ log.bite }}
           </li>
-        </ul>
+        </ol>
       </div>
     </div>
   `,
@@ -142,11 +224,16 @@ Vue.component('select-area', {
         return;
       }
 
-      this.solver.predict(this.eatButtons.activeButton, this.biteButtons.activeButton);
-      this.reset();
+      this.solver.predict(this.eatButtons.activeButton.index, this.biteButtons.activeButton.index);
+      this.resetButtons();
     },
 
     reset() {
+      this.solver.reset(this.difficulty);
+      this.resetButtons();
+    },
+
+    resetButtons() {
       this.eatButtons.reset();
       this.biteButtons.reset();
     }
@@ -251,6 +338,10 @@ new Vue({
     difficulty: '3',
     maxDifficulty: 5,
     solver: new Solver()
+  },
+
+  mounted() {
+    this.solver.init(Number(this.difficulty));
   }
 })
 
