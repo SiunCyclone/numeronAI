@@ -50,12 +50,33 @@ class Solver {
   private _candidateList:number[] = [];
 }
 
+var permutation = (originalNumbers:number[], length:number) => {
+  var result:number[][] = [];
+
+  var loopLamb = (candidateTmp:number[], numbers:number[]) => {
+    numbers.forEach((x) => {
+      var candidate = [...candidateTmp, x];
+
+      if (candidate.length === length) {
+        result.push(candidate);
+      } else {
+        var restNumbers = numbers.filter(y => y !== x);
+        loopLamb(candidate, restNumbers);
+      }
+    });
+  };
+
+  loopLamb([], originalNumbers);
+
+  return result;
+};
+
 Vue.component('predict-area', {
   template: `
     <div class="predict-area">
       <div class="predict-view">
         <h2>{{ solver.call }}</h2>
-        <h4>正答確率: {{ }}</h4>
+        <h4>正答確率: {{ correctProbability }} %</h4>
         <h4>候補数: {{ candidateCount }}</h4>
       </div>
 
@@ -75,6 +96,10 @@ Vue.component('predict-area', {
   },
 
   computed: {
+    correctProbability() {
+      return (1 / this.candidateCount * 100).toFixed(3);
+    },
+
     candidateCount() {
       this.solver.difficulty = this.difficulty;
       return this.solver.candidateCount;
