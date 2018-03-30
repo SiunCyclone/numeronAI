@@ -5,13 +5,30 @@
   "main": "app.js",
   "scripts": {
     "build": "webpack --watch",
-    "start": "nodemon"
+    "start": "nodemon",
+    "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   },
   "author": "siun",
   "license": "MIT",
   "devDependencies": {
     "express": "^4.16.3",
+    "jest": "^22.4.3",
     "nodemon": "^1.17.2",
+    "ts-jest": "^22.4.2",
     "ts-loader": "^4.1.0",
     "typescript": "^2.7.2",
     "underscore": "^1.8.3",

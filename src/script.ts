@@ -54,10 +54,10 @@ class Solver {
   updateCandidateList(eat:number, bite:number) {
     this._candidateList = this._candidateList.filter(candidate => {
       if (judge(candidate, this._call).join("") === [eat, bite].join("")) {
-        return true
+        return true;
       } else {
         this._outList.push(candidate);
-        return false
+        return false;
       }
     });
   }
@@ -88,8 +88,8 @@ class Solver {
 
   reset(difficulty:number):void {
     this.difficulty = difficulty;
-    this._call = _.sample(_.range(1, 10), this.difficulty);
-    this._candidateList = permutation(_.range(1, 10), this.difficulty);
+    this._call = _.sample(_.range(1, 10), difficulty);
+    this._candidateList = permutation(_.range(1, 10), difficulty);
     this._outList = [];
     this._answerLog = [];
   }
@@ -229,8 +229,8 @@ Vue.component('select-area', {
     },
 
     reset() {
-      this.solver.reset(this.difficulty);
       this.resetButtons();
+      this.solver.reset(this.difficulty);
     },
 
     resetButtons() {
