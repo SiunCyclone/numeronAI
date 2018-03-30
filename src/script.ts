@@ -231,7 +231,7 @@ Vue.component('select-area', {
 
   methods: {
     confirm() {
-      if (this.eatButtons.activeButton === '' || this.biteButtons.activeButton === '') {
+      if (!this.eatButtons.isActive || !this.biteButtons.isActive) {
         console.log("EATとBITE両方選択してください");
         return;
       }
@@ -281,7 +281,8 @@ Vue.component('select-buttons', {
     return {
       buttons: [],
       activeIndex: -1,
-      name: this.text
+      name: this.text,
+      isActive: false
     };
   },
 
@@ -294,8 +295,10 @@ Vue.component('select-buttons', {
       this.buttons.forEach(button => {
         button.isActive = (button.index === index);
 
-        if (button.isActive)
+        if (button.isActive) {
+          this.isActive = true;
           this.activeIndex = index;
+        }
       });
     },
 
@@ -303,6 +306,8 @@ Vue.component('select-buttons', {
       this.buttons.forEach(button => {
         button.isActive = false;
       });
+
+      this.isActive = false;
     }
   }
 });
