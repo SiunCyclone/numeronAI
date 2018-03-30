@@ -4,7 +4,7 @@ var app = express()
 app.use(express.static('dist'));
 
 app.get('/', (req, res) => {
-  res.sendFile('dist/index.html', { root: __dirname })
+  res.sendFile('index.html', { root: __dirname })
 })
 
 app.listen(3000)
