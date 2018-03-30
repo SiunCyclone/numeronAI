@@ -15,18 +15,29 @@ ul {
   padding 0;
 }
 
-.predict-view {
-  float: left;
-  width: 350px;
+.solver {
+  width: 600px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.predict-area {
+  width: 250px;
   height: 200px;
   border: 2px solid #FFF;
 }
 
-.predict-log {
-  float: right;
+.log-area {
   width: 200px;
   height: 200px;
   border: 2px solid #FFF;
+}
+
+.select-area {
+}
+
+.confirm-button, .reset-button{
+  padding: 10px 25px;
 }
 
 .select-buttons li {

@@ -37,6 +37,11 @@ class Solver {
   }
 
   createEntroyList(targetList:number[][]):Entropy[] {
+    if (targetList.length == 0) {
+      console.log("答えが存在しません");
+      return;
+    }
+
     var entropyList:Entropy[] = [];
 
     targetList.forEach(target => {
@@ -64,6 +69,10 @@ class Solver {
 
   decideCall():void {
     var candidateEntropyList = this.createEntroyList(this._candidateList);
+
+    if (candidateEntropyList === undefined)
+      return;
+
     var candidateMaxEntropy = Math.max(...candidateEntropyList.map(entropy => entropy.value));
 
     var outEntropyList = this.createEntroyList(this._outList);
@@ -76,23 +85,26 @@ class Solver {
   }
 
   predict(eat:number, bite:number):void {
-    this.updateCandidateList(eat, bite);
-    this.decideCall();
+    if (this._candidateList.length < 1)
+      return;
 
-    console.log(this.call);
+    if (eat + bite > this.difficulty)
+      return;
 
     this._answerLog.push({
       call: this.call,
       eat: eat,
       bite: bite
     });
+
+    this.updateCandidateList(eat, bite);
+    this.decideCall();
   }
 
   reset(difficulty:number):void {
     this.difficulty = difficulty;
     this.call = _.sample(_.range(1, 10), difficulty);
     this._candidateList = permutation(_.range(1, 10), difficulty);
-    console.log(this._candidateList);
     this._outList = [];
     this._answerLog = [];
   }
@@ -155,33 +167,38 @@ var permutation = (originalNumbers:number[], length:number) => {
 Vue.component('predict-area', {
   template: `
     <div class="predict-area">
-      <div class="predict-view">
-        <h2>{{ callNumber }}</h2>
-        <h4>正答確率: {{ correctProbability }} %</h4>
-        <h4>候補数: {{ candidateCount }}</h4>
-      </div>
-
-      <div class="predict-log">
-       <ol>
-          <li v-for="log in answerLog">
-            {{ log.call }} {{ log.eat }}, {{ log.bite }}
-          </li>
-        </ol>
-      </div>
+      <h2>{{ callNumber }}</h2>
+      <h4>正答確率: {{ correctProbability }} %</h4>
+      <h4>候補数: {{ candidateCount }}</h4>
     </div>
   `,
 
   props: {
     difficulty: String,
     callNumber: { required: true },
-    candidateCount: Number,
-    answerLog: { required: true }
+    candidateCount: Number
   },
 
   computed: {
     correctProbability() {
       return (1 / this.candidateCount * 100).toFixed(3);
     }
+  }
+});
+
+Vue.component('log-area', {
+  template: `
+    <div class="log-area">
+      <ol>
+        <li v-for="log in answerLog">
+          {{ log.call }} {{ log.eat }}, {{ log.bite }}
+        </li>
+      </ol>
+    </div>
+  `,
+
+  props: {
+    answerLog: { required: true }
   }
 });
 
@@ -286,8 +303,6 @@ Vue.component('select-buttons', {
       this.buttons.forEach(button => {
         button.isActive = false;
       });
-
-      this.activeIndex = -1;
     }
   }
 });
@@ -333,19 +348,20 @@ Vue.component('reset-button', {
   }
 });
 
+//          <option v-for="i in maxDifficulty">{{ i }}</option>
 new Vue({
   el: '#solver',
 
   template: `
-    <div>
+    <div class="solver">
       <div class="difficulty-menu">
-        難易度
         <select v-model="difficulty">
-          <option v-for="i in maxDifficulty">{{ i }}</option>
+          <option>3</option>
         </select>
       </div>
 
-      <predict-area :difficulty="difficulty" :call-number="solver.call" :candidate-count="solver.candidateCount" :answer-log="solver.answerLog"></predict-area>
+      <predict-area :difficulty="difficulty" :call-number="solver.call" :candidate-count="solver.candidateCount"></predict-area>
+      <log-area :answer-log="solver.answerLog"></log-area>
       <select-area :difficulty="difficulty" @predict="predict" @reset="reset"></select-area>
     </div>
   `,
