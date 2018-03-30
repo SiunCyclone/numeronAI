@@ -7,19 +7,7 @@
 </head>
 <body>
   <h1>探偵君！</h1>
-
-  <div id="main">
-    <div class="difficulty-menu">
-      難易度
-      <select v-model="difficulty">
-        <option v-for="i in maxDifficulty">{{ i }}</option>
-      </select>
-    </div>
-
-    <predict-area :difficulty="difficulty" :solver="solver"></predict-area>
-    <select-area :difficulty="difficulty" :solver="solver"></select-area>
-  </div>
-
+  <div id="solver"></div>
   <script src="./bundle.js"></script>
 </body>
 </html>

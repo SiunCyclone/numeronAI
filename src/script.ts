@@ -13,7 +13,7 @@ type Entropy = {
 }
 
 class Solver {
-  init(difficulty:number) {
+  constructor(difficulty:number) {
     this.reset(difficulty);
   }
 
@@ -53,7 +53,7 @@ class Solver {
 
   updateCandidateList(eat:number, bite:number) {
     this._candidateList = this._candidateList.filter(candidate => {
-      if (judge(candidate, this._call).join("") === [eat, bite].join("")) {
+      if (judge(candidate, this.call).join("") === [eat, bite].join("")) {
         return true;
       } else {
         this._outList.push(candidate);
@@ -70,14 +70,16 @@ class Solver {
     var outMaxEntropy = Math.max(...outEntropyList.map(entropy => entropy.value));
 
     if (candidateMaxEntropy >= outMaxEntropy)
-      this._call = candidateEntropyList.find(entropy => entropy.value == candidateMaxEntropy).candidate;
+      this.call = candidateEntropyList.find(entropy => entropy.value == candidateMaxEntropy).candidate;
     else
-      this._call = outEntropyList.find(entropy => entropy.value == outMaxEntropy).candidate;
+      this.call = outEntropyList.find(entropy => entropy.value == outMaxEntropy).candidate;
   }
 
   predict(eat:number, bite:number):void {
     this.updateCandidateList(eat, bite);
     this.decideCall();
+
+    console.log(this.call);
 
     this._answerLog.push({
       call: this.call,
@@ -88,14 +90,11 @@ class Solver {
 
   reset(difficulty:number):void {
     this.difficulty = difficulty;
-    this._call = _.sample(_.range(1, 10), difficulty);
+    this.call = _.sample(_.range(1, 10), difficulty);
     this._candidateList = permutation(_.range(1, 10), difficulty);
+    console.log(this._candidateList);
     this._outList = [];
     this._answerLog = [];
-  }
-
-  get call():number[] {
-    return this._call;
   }
 
   get candidateCount():number {
@@ -111,8 +110,8 @@ class Solver {
   }
 
   public difficulty:number;
+  public call:number[] = [];
 
-  private _call:number[] = [];
   private _candidateList:number[][] = [];
   private _outList:number[][] = [];
   private _answerLog:Answer[] = [];
@@ -157,14 +156,14 @@ Vue.component('predict-area', {
   template: `
     <div class="predict-area">
       <div class="predict-view">
-        <h2>{{ solver.call }}</h2>
+        <h2>{{ callNumber }}</h2>
         <h4>正答確率: {{ correctProbability }} %</h4>
         <h4>候補数: {{ candidateCount }}</h4>
       </div>
 
       <div class="predict-log">
-        <ol>
-          <li v-for="log in solver.answerLog">
+       <ol>
+          <li v-for="log in answerLog">
             {{ log.call }} {{ log.eat }}, {{ log.bite }}
           </li>
         </ol>
@@ -174,17 +173,14 @@ Vue.component('predict-area', {
 
   props: {
     difficulty: String,
-    solver: Solver
+    callNumber: { required: true },
+    candidateCount: Number,
+    answerLog: { required: true }
   },
 
   computed: {
     correctProbability() {
       return (1 / this.candidateCount * 100).toFixed(3);
-    },
-
-    candidateCount() {
-      this.solver.difficulty = this.difficulty;
-      return this.solver.candidateCount;
     }
   }
 });
@@ -201,8 +197,7 @@ Vue.component('select-area', {
   `,
 
   props: {
-    difficulty: String,
-    solver: Solver
+    difficulty: String
   },
 
   data() {
@@ -224,13 +219,20 @@ Vue.component('select-area', {
         return;
       }
 
-      this.solver.predict(this.eatButtons.activeButton.index, this.biteButtons.activeButton.index);
       this.resetButtons();
+
+      var eatIndex = this.eatButtons.activeIndex;
+      var eat = this.eatButtons.buttons[eatIndex].index;
+
+      var biteIndex = this.biteButtons.activeIndex;
+      var bite = this.biteButtons.buttons[biteIndex].index;
+
+      this.$emit('predict', eat, bite);
     },
 
     reset() {
       this.resetButtons();
-      this.solver.reset(this.difficulty);
+      this.$emit('reset');
     },
 
     resetButtons() {
@@ -261,7 +263,7 @@ Vue.component('select-buttons', {
   data() {
     return {
       buttons: [],
-      activeButton: '',
+      activeIndex: -1,
       name: this.text
     };
   },
@@ -276,7 +278,7 @@ Vue.component('select-buttons', {
         button.isActive = (button.index === index);
 
         if (button.isActive)
-          this.activeButton = button;
+          this.activeIndex = index;
       });
     },
 
@@ -285,7 +287,7 @@ Vue.component('select-buttons', {
         button.isActive = false;
       });
 
-      this.activeButton = '';
+      this.activeIndex = -1;
     }
   }
 });
@@ -332,16 +334,36 @@ Vue.component('reset-button', {
 });
 
 new Vue({
-  el: '#main',
+  el: '#solver',
+
+  template: `
+    <div>
+      <div class="difficulty-menu">
+        難易度
+        <select v-model="difficulty">
+          <option v-for="i in maxDifficulty">{{ i }}</option>
+        </select>
+      </div>
+
+      <predict-area :difficulty="difficulty" :call-number="solver.call" :candidate-count="solver.candidateCount" :answer-log="solver.answerLog"></predict-area>
+      <select-area :difficulty="difficulty" @predict="predict" @reset="reset"></select-area>
+    </div>
+  `,
 
   data: {
     difficulty: '3',
     maxDifficulty: 5,
-    solver: new Solver()
+    solver: new Solver(3)
   },
 
-  mounted() {
-    this.solver.init(Number(this.difficulty));
+  methods: {
+    reset() {
+      this.solver.reset(Number(this.difficulty));
+    },
+
+    predict(eat, bite) {
+      this.solver.predict(eat, bite);
+    }
   }
 })
 
