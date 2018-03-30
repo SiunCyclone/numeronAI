@@ -103,8 +103,8 @@ class Solver {
 
   reset(difficulty:number):void {
     this.difficulty = difficulty;
-    this.call = _.sample(_.range(1, 10), difficulty);
-    this._candidateList = permutation(_.range(1, 10), difficulty);
+    this.call = _.sample(_.range(0, 10), difficulty);
+    this._candidateList = permutation(_.range(0, 10), difficulty);
     this._outList = [];
     this._answerLog = [];
   }
