@@ -15,34 +15,38 @@ ul {
   padding 0;
 }
 
-.solver {
+#header {
+}
+
+#footer {
+}
+
+#solver {
   width: 600px;
   display: flex;
   flex-wrap: wrap;
 }
 
-.predict-area {
+#predict-area {
   width: 250px;
   height: 200px;
   border: 2px solid #FFF;
 }
 
-.log-area {
+#log-area {
   width: 200px;
   height: 200px;
   border: 2px solid #FFF;
 }
 
-.select-area {
-}
+#select-area {
+  display: flex;
 
-.confirm-button, .reset-button{
-  padding: 10px 25px;
 }
 
 .select-buttons li {
-  display: inline-block;
-  padding: 0px 2px;
+  display: flex;
+  margin: 5px 0;
 }
 
 .select-button, .nearpin-button {
@@ -50,47 +54,23 @@ ul {
   font-size: 1.2em;
   font-weight: bold;
 
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-}
-
-.select-button, .nearpin-button {
-  border:1px solid #793b0c;
-  text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
-  color: #FFFFFF;
-  background-color: #ac5411; background-image: -webkit-gradient(linear, left top, left bottom, from(#ac5411), to(#3A000D));
-  background-image: -webkit-linear-gradient(top, #ac5411, #3A000D);
-  background-image: -moz-linear-gradient(top, #ac5411, #3A000D);
-  background-image: -ms-linear-gradient(top, #ac5411, #3A000D);
-  background-image: -o-linear-gradient(top, #ac5411, #3A000D);
-  background-image: linear-gradient(to bottom, #ac5411, #3A000D);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ac5411, endColorstr=#3A000D);
+  background: #793b0c;
+  color: #ffffff;
+  border-style: none;
+  border-radius: 5px;
 }
 
 .select-button:hover, .nearpin-button:hover {
-  background-color: #DA6B16; background-image: -webkit-gradient(linear, left top, left bottom, from(#DA6B16), to(#6D0019));
-  background-image: -webkit-linear-gradient(top, #DA6B16, #6D0019);
-  background-image: -moz-linear-gradient(top, #DA6B16, #6D0019);
-  background-image: -ms-linear-gradient(top, #DA6B16, #6D0019);
-  background-image: -o-linear-gradient(top, #DA6B16, #6D0019);
-  background-image: linear-gradient(to bottom, #DA6B16, #6D0019);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#DA6B16, endColorstr=#6D0019);
+  background: #af4831;
 }
 
-.select-button:active, .nearpin-button:active {
-  background-color: #DA6B16; background-image: -webkit-gradient(linear, left top, left bottom, from(#DA6B16), to(#6D0019));
-  background-image: -webkit-linear-gradient(top, #DA6B16, #6D0019);
-  background-image: -moz-linear-gradient(top, #DA6B16, #6D0019);
-  background-image: -ms-linear-gradient(top, #DA6B16, #6D0019);
-  background-image: -o-linear-gradient(top, #DA6B16, #6D0019);
-  background-image: linear-gradient(to bottom, #DA6B16, #6D0019);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#DA6B16, endColorstr=#6D0019);
+.select-button.is-active, .nearpin-button.is-active {
+  background: #c9c588;
+  color: #000000;
 }
 
-.select-button:active, .nearpin-button:active, .is-active,
-.select-button:hover.is-active, .nearpin-button:hover.is-active {
-  background-image: -webkit-linear-gradient(top, #d5cea6, #b7ad70);
-  background-image: -moz-linear-gradient(top, #d5cea6, #b7ad70);
-  background-image: -ms-linear-gradient(top, #d5cea6, #b7ad70);
-  background-image: -o-linear-gradient(top, #d5cea6, #b7ad70);
-  background-image: linear-gradient(to bottom, #d5cea6, #b7ad70);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#d5cea6, endColorstr=#b7ad70);
+.confirm-button, .reset-button{
+  padding: 10px 25px;
+  font-size: 1.2em;
 }
 

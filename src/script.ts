@@ -166,7 +166,7 @@ var permutation = (originalNumbers:number[], length:number) => {
 
 Vue.component('predict-area', {
   template: `
-    <div class="predict-area">
+    <div id="predict-area">
       <h2>{{ callNumber }}</h2>
       <h4>正答確率: {{ correctProbability }} %</h4>
       <h4>候補数: {{ candidateCount }}</h4>
@@ -188,7 +188,7 @@ Vue.component('predict-area', {
 
 Vue.component('log-area', {
   template: `
-    <div class="log-area">
+    <div id="log-area">
       <ol>
         <li v-for="log in answerLog">
           {{ log.call }} {{ log.eat }}, {{ log.bite }}
@@ -204,7 +204,7 @@ Vue.component('log-area', {
 
 Vue.component('select-area', {
   template: `
-    <div class="select-area">
+    <div id="select-area">
       <select-buttons :difficulty="difficulty" text="EAT"></select-buttons>
       <select-buttons :difficulty="difficulty" text="BITE"></select-buttons>
 
@@ -358,8 +358,8 @@ new Vue({
   el: '#solver',
 
   template: `
-    <div class="solver">
-      <div class="difficulty-menu">
+    <div id="solver">
+      <div id="difficulty-menu">
         <select v-model="difficulty">
           <option>3</option>
         </select>
