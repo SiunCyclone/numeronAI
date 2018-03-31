@@ -167,9 +167,9 @@ var permutation = (originalNumbers:number[], length:number) => {
 Vue.component('predict-area', {
   template: `
     <div id="predict-area">
-      <h2>{{ callNumber }}</h2>
-      <h4>正答確率: {{ correctProbability }} %</h4>
-      <h4>候補数: {{ candidateCount }}</h4>
+      <div id="call-number">{{ callNumber }}</div>
+      <div id="correct-probability">正答確率: {{ correctProbability }} %</div>
+      <div id="candidate-count">候補数: {{ candidateCount }}</div>
     </div>
   `,
 
@@ -191,7 +191,7 @@ Vue.component('log-area', {
     <div id="log-area">
       <ol>
         <li v-for="log in answerLog">
-          {{ log.call }} {{ log.eat }}, {{ log.bite }}
+          <div id="log-list">{{ log.call }} {{ log.eat }}, {{ log.bite }}</div>
         </li>
       </ol>
     </div>
@@ -208,8 +208,10 @@ Vue.component('select-area', {
       <select-buttons :difficulty="difficulty" text="EAT"></select-buttons>
       <select-buttons :difficulty="difficulty" text="BITE"></select-buttons>
 
-      <confirm-button @click="confirm">確定</confirm-button>
-      <reset-button @click="reset">リセット</reset-button>
+      <div id="confirm-reset-area">
+        <reset-button @click="reset">リセット</reset-button>
+        <confirm-button @click="confirm">確定</confirm-button>
+      </div>
     </div>
   `,
 
@@ -262,13 +264,12 @@ Vue.component('select-area', {
 Vue.component('select-buttons', {
   template: `
     <div class="select-buttons">
-      {{ name }}
+      <p>{{ name }}</p>
       <ul>
         <li v-for="i in Number(difficulty)">
           <select-button @click="select(i-1)" :index_i="i-1">{{ i - 1 }}</select-button>
         </li>
       </ul>
-      <br>
     </div>
   `,
 
@@ -314,7 +315,9 @@ Vue.component('select-buttons', {
 
 Vue.component('select-button', {
   template: `
-    <button class="select-button" :class="{ 'is-active': isActive }" @click="$emit('click')"><slot></slot></button>
+    <button class="select-button" :class="{ 'is-active': isActive }" @click="$emit('click')">
+      <slot></slot>
+    </button>
   `,
 
   props: {
@@ -331,7 +334,9 @@ Vue.component('select-button', {
 
 Vue.component('confirm-button', {
   template: `
-    <button class="confirm-button" @click=confirm><slot></slot></button>
+    <button class="confirm-button" @click=confirm>
+      <slot></slot>
+    </button>
   `,
 
   methods: {
@@ -343,7 +348,9 @@ Vue.component('confirm-button', {
 
 Vue.component('reset-button', {
   template: `
-    <button class="reset-button" @click=reset><slot></slot></button>
+    <button class="reset-button" @click=reset>
+      <slot></slot>
+    </button>
   `,
 
   methods: {
