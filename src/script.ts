@@ -205,8 +205,8 @@ Vue.component('log-area', {
 Vue.component('select-area', {
   template: `
     <div id="select-area">
-      <select-buttons :difficulty="difficulty" text="EAT"></select-buttons>
-      <select-buttons :difficulty="difficulty" text="BITE"></select-buttons>
+      <select-buttons :count="Number(difficulty)" text="EAT"></select-buttons>
+      <select-buttons :count="Number(difficulty) + 1" text="BITE"></select-buttons>
 
       <div id="confirm-reset-area">
         <reset-button @click="reset">リセット</reset-button>
@@ -266,7 +266,7 @@ Vue.component('select-buttons', {
     <div class="select-buttons">
       <p>{{ name }}</p>
       <ul>
-        <li v-for="i in Number(difficulty)">
+        <li v-for="i in count">
           <select-button @click="select(i-1)" :index_i="i-1">{{ i - 1 }}</select-button>
         </li>
       </ul>
@@ -274,7 +274,7 @@ Vue.component('select-buttons', {
   `,
 
   props: {
-    difficulty: String,
+    count: Number,
     text: String,
   },
 
