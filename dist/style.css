@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 html, body {
@@ -32,10 +33,10 @@ main {
 }
 
 #solver {
-  width: 500px;
+  width: 600px;
 
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 60px 0;
 
   display: flex;
   flex-wrap: wrap;
@@ -59,8 +60,8 @@ header h1 {
 
 
 #predict-area {
-  width: 240px;
-  height: 200px;
+  width: 260px;
+  height: 250px;
   margin: 0 10px;
   border: 3px solid #351604;
   border-radius: 5px;
@@ -83,19 +84,66 @@ header h1 {
 }
 
 #log-area {
-  width: 180px;
-  height: 200px;
+  width: 260px;
+  height: 250px;
   border: 3px solid #351604;
   border-radius: 5px;
 }
 
-#log-area ol {
-  padding-left: 35px;
-  margin: 5px auto;
+#log-title {
+  text-align: center;
+  border-bottom: 3px solid #351604;
 }
 
-#log-list {
+#log-section-title {
+  border-bottom: 3px solid #351604;
+}
+
+#log-section-title ul {
+  display: flex;
+  justify-content: space-evenly;
+  list-style: none;
+}
+#log-section-title li {
+  text-align: center;
+  flex: 1 0 auto;
+}
+
+#log-section-title li+ li {
+  border-left: 3px solid #351604;
+}
+
+.log-section-turn {
+  width: 45px;
+}
+
+.log-section-call {
+  width: 120px;
+}
+
+.log-section-judge {
+  width: 75px;
+}
+
+#log-list ul {
+  list-style: none;
+}
+
+.log-value ul {
+  display: flex;
+  justify-content: space-evenly;
+  list-style: none;
+}
+
+.log-value li {
+  flex: 1 0 auto;
   font-size: 1.2em;
+  text-align: center;
+  border-bottom: 1px solid #351604;
+}
+
+.log-value li+ li {
+  border-left: 3px solid #351604;
 }
 
 #select-area {

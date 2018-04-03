@@ -2,6 +2,7 @@ import Vue from "vue";
 import _ from "underscore";
 
 type Answer = {
+  turn: number,
   call: number[],
   eat: number,
   bite: number
@@ -92,6 +93,7 @@ class Solver {
       return;
 
     this._answerLog.push({
+      turn: this._turn,
       call: this.call,
       eat: eat,
       bite: bite
@@ -99,11 +101,13 @@ class Solver {
 
     this.updateCandidateList(eat, bite);
     this.decideCall();
+    this._turn += 1;
   }
 
   reset(difficulty:number):void {
     this.difficulty = difficulty;
     this.call = _.sample(_.range(0, 10), difficulty);
+    this._turn = 1;
     this._candidateList = permutation(_.range(0, 10), difficulty);
     this._outList = [];
     this._answerLog = [];
@@ -124,6 +128,7 @@ class Solver {
   public difficulty:number;
   public call:number[] = [];
 
+  private _turn:number = 1;
   private _candidateList:number[][] = [];
   private _outList:number[][] = [];
   private _answerLog:Answer[] = [];
@@ -189,11 +194,29 @@ Vue.component('predict-area', {
 Vue.component('log-area', {
   template: `
     <div id="log-area">
-      <ol>
-        <li v-for="log in answerLog">
-          <div id="log-list">{{ log.call }} {{ log.eat }}, {{ log.bite }}</div>
-        </li>
-      </ol>
+      <div id="log-title">ログ</div>
+
+      <div id="log-section-title">
+        <ul>
+          <li class="log-section-turn">ターン</li>
+          <li class="log-section-call">コール</li>
+          <li class="log-section-judge">EAT, BITE</li>
+        </ul>
+      </div>
+
+      <div id="log-list">
+        <ul>
+          <li v-for="log in answerLog">
+            <div class="log-value">
+              <ul>
+                <li class="log-section-turn">{{ log.turn }}</li>
+                <li class="log-section-call">{{ log.call }}</li>
+                <li class="log-section-judge">{{ log.eat }}, {{ log.bite }}</li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   `,
 
