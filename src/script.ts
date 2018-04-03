@@ -228,18 +228,19 @@ Vue.component('log-area', {
 Vue.component('select-area', {
   template: `
     <div id="select-area">
-      <select-buttons :count="Number(difficulty)" text="EAT"></select-buttons>
-      <select-buttons :count="Number(difficulty) + 1" text="BITE"></select-buttons>
+      <select-buttons :count="Number(difficulty)" text="EAT" :isSolved="isSolved"></select-buttons>
+      <select-buttons :count="Number(difficulty) + 1" text="BITE" :isSolved="isSolved"></select-buttons>
 
       <div id="confirm-reset-area">
         <reset-button @click="reset">リセット</reset-button>
-        <confirm-button @click="confirm">確定</confirm-button>
+        <confirm-button @click="confirm" :isSolved="isSolved">確定</confirm-button>
       </div>
     </div>
   `,
 
   props: {
-    difficulty: String
+    difficulty: String,
+    candidateCount: Number
   },
 
   data() {
@@ -252,6 +253,12 @@ Vue.component('select-area', {
   mounted() {
     this.eatButtons = this.$children[0];
     this.biteButtons = this.$children[1];
+  },
+
+  computed: {
+    isSolved() {
+      return this.candidateCount <= 1;
+    }
   },
 
   methods: {
@@ -290,7 +297,7 @@ Vue.component('select-buttons', {
       <p>{{ name }}</p>
       <ul>
         <li v-for="i in count">
-          <select-button @click="select(i-1)" :index_i="i-1">{{ i - 1 }}</select-button>
+          <select-button @click="select(i-1)" :index_i="i-1" :isSolved="isSolved">{{ i - 1 }}</select-button>
         </li>
       </ul>
     </div>
@@ -299,6 +306,7 @@ Vue.component('select-buttons', {
   props: {
     count: Number,
     text: String,
+    isSolved: Boolean
   },
 
   data() {
@@ -338,13 +346,14 @@ Vue.component('select-buttons', {
 
 Vue.component('select-button', {
   template: `
-    <button class="select-button" :class="{ 'is-active': isActive }" @click="$emit('click')">
+    <button class="select-button" :class="[{ 'is-active': isActive }, { 'disabled-button': isSolved }]" @click="$emit('click')">
       <slot></slot>
     </button>
   `,
 
   props: {
-    index_i: Number
+    index_i: Number,
+    isSolved: Boolean
   },
 
   data() {
@@ -357,10 +366,14 @@ Vue.component('select-button', {
 
 Vue.component('confirm-button', {
   template: `
-    <button class="confirm-button" @click=confirm>
+    <button :class="['confirm-button', { 'disabled-button': isSolved }]" @click=confirm>
       <slot></slot>
     </button>
   `,
+
+  props: {
+    isSolved: Boolean
+  },
 
   methods: {
     confirm() {
@@ -397,7 +410,7 @@ new Vue({
 
       <predict-area :difficulty="difficulty" :call-number="solver.call" :candidate-count="solver.candidateCount"></predict-area>
       <log-area :answer-log="solver.answerLog"></log-area>
-      <select-area :difficulty="difficulty" @predict="predict" @reset="reset"></select-area>
+      <select-area :difficulty="difficulty" :candidateCount="solver.candidateCount" @predict="predict" @reset="reset"></select-area>
     </div>
   `,
 

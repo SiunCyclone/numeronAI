@@ -213,6 +213,11 @@ header h1 {
   background: #dd5252;
 }
 
+.disabled-button {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 .reset-button {
   width: 140px;
   height: 70px;
