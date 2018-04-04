@@ -173,7 +173,7 @@ header h1 {
   font-size: 1.5em;
 }
 
-.select-button, .nearpin-button {
+.select-button {
   padding: 15px 30px;
   font-size: 1.3em;
   font-weight: bold;
@@ -182,13 +182,14 @@ header h1 {
   color: #ffffff;
   border-style: none;
   border-radius: 5px;
+  transition: 0.2s;
 }
 
-.select-button:hover, .nearpin-button:hover {
+.select-button:hover {
   background: #af4831;
 }
 
-.select-button.is-active, .nearpin-button.is-active {
+.select-button.is-active {
   background: #c9c588;
   color: #000000;
 }
@@ -207,6 +208,7 @@ header h1 {
   margin-left: 30px;
   background: #af2d2d;
   color: #ffffff;
+  transition: 0.2s;
 }
 
 .confirm-button:hover {
@@ -223,6 +225,7 @@ header h1 {
   height: 70px;
   margin-left: 110px;
   background: #d8d8d8;
+  transition: 0.2s;
 }
 
 .reset-button:hover {
